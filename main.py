@@ -1,16 +1,27 @@
-# main.py
-
 import streamlit as st
+from src.utils.visualization import set_page_config
+from src.utils.page_config import (
+    PageID, 
+    get_page_handler, 
+    get_page_id_by_display_name,
+    get_all_display_names
+)
 
-# 设置应用标题
-st.title("Mathematics Knowledge App")
+# 设置页面配置
+set_page_config()
 
-# 创建页面导航
-page = st.sidebar.selectbox("Select a page", ["Home", "Draw a Regular n-gon"])
+# 显示侧边栏导航
+page_name = st.sidebar.selectbox(
+    "选择页面",
+    get_all_display_names()
+)
 
-# 根据选择的页面显示内容
-if page == "Home":
-    st.write("Welcome to the Mathematics Knowledge App! Please select a page from the sidebar.")
-elif page == "Draw a Regular n-gon":
-    from pages.page1 import draw_polygon  # 导入绘制正n边形的功能
-    draw_polygon()  # 调用绘制函数
+# 获取页面ID
+page_id = get_page_id_by_display_name(page_name)
+
+if page_id:
+    # 动态获取并调用页面处理函数
+    page_handler = get_page_handler(page_id)
+    page_handler()
+else:
+    st.markdown(f"# {page_name} 页面正在建设中...")
