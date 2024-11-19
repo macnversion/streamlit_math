@@ -18,6 +18,7 @@ class PageID(Enum):
     GEOMETRY_POLYGON = "geometry_polygon"
     GEOMETRY_CIRCLE = "geometry_circle"
     GEOMETRY_ANGLE = "geometry_angle"
+    GEOMETRY_TRIANGLE = "geometry_triangle"
     ALGEBRA = "algebra"
     ARITHMETIC = "arithmetic"
 
@@ -46,6 +47,12 @@ PAGES = {
         file_path="pages.geometry.angles",
         handler="show_angles_page",
         description="认识角的概念与度量"
+    ),
+    PageID.GEOMETRY_TRIANGLE: PageInfo(
+        display_name="几何/三角形",
+        file_path="pages.geometry.triangles",
+        handler="show_triangles_page",
+        description="三角形的性质与构造"
     ),
     # ... 其他页面配置
 }

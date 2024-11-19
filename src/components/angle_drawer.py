@@ -2,6 +2,10 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 from ..utils.visualization import create_figure, setup_coordinate_system
+from ..utils.plot_utils import configure_matplotlib_defaults
+
+# 配置matplotlib
+configure_matplotlib_defaults()
 
 def calculate_angle_points(angle_deg, radius=5, num_points=100):
     """计算角的边的点坐标
@@ -55,36 +59,39 @@ def draw_angle_component():
         margin = st.slider("图形边距", min_value=1.1, max_value=2.0, value=1.5,
                           key="margin_slider")
     
-    fig, ax = create_figure()
-    
-    # 计算角的点集
-    (x_start, y_start), (x_end, y_end), (x_arc, y_arc) = calculate_angle_points(angle, radius)
-    
-    # 设置坐标系范围
-    max_coord = radius * margin
-    setup_coordinate_system(ax, xlim=(-max_coord, max_coord), ylim=(-max_coord, max_coord))
-    
-    # 绘制射线
-    ax.plot(x_start, y_start, 'b-', linewidth=2)  # 起始射线
-    ax.plot(x_end, y_end, 'b-', linewidth=2)      # 终止射线
-    
-    # 绘制弧线
-    ax.plot(x_arc, y_arc, 'r-', linewidth=2)
-    
-    # 显示角度值
-    if show_degree:
-        arc_center_idx = len(x_arc) // 2
-        text_x = x_arc[arc_center_idx] * 1.5
-        text_y = y_arc[arc_center_idx] * 1.5
-        ax.text(text_x, text_y, f'{angle}°', fontsize=12)
-    
-    # 设置网格
-    ax.grid(show_grid)
-    
-    # 在原点添加一个点
-    ax.plot(0, 0, 'ko')
-    
-    st.pyplot(fig)
+    # 创建一个居中的容器
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:  # 使用中间的列来显示图形
+        fig, ax = create_figure(figsize=(4, 4))  # 使用较小的图形尺寸
+        
+        # 计算角的点集
+        (x_start, y_start), (x_end, y_end), (x_arc, y_arc) = calculate_angle_points(angle, radius)
+        
+        # 设置坐标系范围
+        max_coord = radius * margin
+        setup_coordinate_system(ax, xlim=(-max_coord, max_coord), ylim=(-max_coord, max_coord))
+        
+        # 绘制射线
+        ax.plot(x_start, y_start, 'b-', linewidth=2)  # 起始射线
+        ax.plot(x_end, y_end, 'b-', linewidth=2)      # 终止射线
+        
+        # 绘制弧线
+        ax.plot(x_arc, y_arc, 'r-', linewidth=2)
+        
+        # 显示角度值
+        if show_degree:
+            arc_center_idx = len(x_arc) // 2
+            text_x = x_arc[arc_center_idx] * 1.5
+            text_y = y_arc[arc_center_idx] * 1.5
+            ax.text(text_x, text_y, f'{angle}°', fontsize=12)
+        
+        # 设置网格
+        ax.grid(show_grid)
+        
+        # 在原点添加一个点
+        ax.plot(0, 0, 'ko')
+        
+        st.pyplot(fig)
 
 def draw_special_angles_component():
     """特殊角度展示组件"""
@@ -106,22 +113,25 @@ def draw_special_angles_component():
     
     angle = special_angles[selected_angle]
     
-    # 使用基本角度绘制组件的函数绘制选中的特殊角
-    fig, ax = create_figure()
-    (x_start, y_start), (x_end, y_end), (x_arc, y_arc) = calculate_angle_points(angle)
-    
-    # 设置坐标系范围
-    setup_coordinate_system(ax, xlim=(-6, 6), ylim=(-6, 6))
-    
-    # 绘制角
-    ax.plot(x_start, y_start, 'b-', linewidth=2)
-    ax.plot(x_end, y_end, 'b-', linewidth=2)
-    ax.plot(x_arc, y_arc, 'r-', linewidth=2)
-    
-    # 显示角度值和说明
-    ax.text(1, 1, f'{angle}°', fontsize=12)
-    
-    st.pyplot(fig)
+    # 创建一个居中的容器
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:  # 使用中间的列来显示图形
+        # 使用基本角度绘制组件的函数绘制选中的特殊角
+        fig, ax = create_figure(figsize=(4, 4))  # 使用较小的图形尺寸
+        (x_start, y_start), (x_end, y_end), (x_arc, y_arc) = calculate_angle_points(angle)
+        
+        # 设置坐标系范围
+        setup_coordinate_system(ax, xlim=(-6, 6), ylim=(-6, 6))
+        
+        # 绘制角
+        ax.plot(x_start, y_start, 'b-', linewidth=2)
+        ax.plot(x_end, y_end, 'b-', linewidth=2)
+        ax.plot(x_arc, y_arc, 'r-', linewidth=2)
+        
+        # 显示角度值和说明
+        ax.text(1, 1, f'{angle}°', fontsize=12)
+        
+        st.pyplot(fig)
     
     # 显示说明文本
     angle_descriptions = {
@@ -153,12 +163,15 @@ def draw_dynamic_coordinate_system_component():
         y_max = st.slider("y轴最大值", min_value=-10.0, max_value=10.0, value=5.0,
                          key="y_max_slider")
     
-    fig, ax = create_figure()
-    
-    # 设置坐标系范围
-    setup_coordinate_system(ax, xlim=(x_min, x_max), ylim=(y_min, y_max))
-    
-    st.pyplot(fig)
+    # 创建一个居中的容器
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:  # 使用中间的列来显示图形
+        fig, ax = create_figure(figsize=(4, 4))  # 使用较小的图形尺寸
+        
+        # 设置坐标系范围
+        setup_coordinate_system(ax, xlim=(x_min, x_max), ylim=(y_min, y_max))
+        
+        st.pyplot(fig)
 
 def draw_interactive_control_component():
     """交互控制选项组件"""
@@ -174,15 +187,18 @@ def draw_interactive_control_component():
         show_title = st.checkbox("显示标题", value=True, key="show_title_interactive")
         show_legend = st.checkbox("显示图例", value=True, key="show_legend_interactive")
     
-    fig, ax = create_figure()
-    
-    # 设置交互控制选项
-    ax.grid(show_grid)
-    ax.axis('on' if show_axis else 'off')
-    ax.set_title('交互控制选项' if show_title else '')
-    ax.legend([] if show_legend else None)
-    
-    st.pyplot(fig)
+    # 创建一个居中的容器
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:  # 使用中间的列来显示图形
+        fig, ax = create_figure(figsize=(4, 4))  # 使用较小的图形尺寸
+        
+        # 设置交互控制选项
+        ax.grid(show_grid)
+        ax.axis('on' if show_axis else 'off')
+        ax.set_title('交互控制选项' if show_title else '')
+        ax.legend([] if show_legend else None)
+        
+        st.pyplot(fig)
 
 # 绘制所有组件
 draw_angle_component()

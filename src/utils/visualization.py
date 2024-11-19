@@ -17,10 +17,16 @@ def setup_matplotlib_defaults():
     plt.rcParams['axes.grid'] = True
     plt.rcParams['font.size'] = 12
 
-def create_figure(figsize=(8, 8)):
-    """创建一个新的图形对象"""
+def create_figure(figsize=(4, 4)):
+    """创建一个新的图形对象
+    
+    Args:
+        figsize: 图形大小，默认为 (4, 4)
+        
+    Returns:
+        tuple: (fig, ax) Matplotlib图形对象和坐标轴对象
+    """
     fig, ax = plt.subplots(figsize=figsize)
-    ax.set_aspect('equal')
     return fig, ax
 
 def setup_coordinate_system(ax, xlim=(-6, 10), ylim=(-6, 10)):
