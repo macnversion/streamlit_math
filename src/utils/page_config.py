@@ -19,6 +19,8 @@ class PageID(Enum):
     GEOMETRY_CIRCLE = "geometry_circle"
     GEOMETRY_ANGLE = "geometry_angle"
     GEOMETRY_TRIANGLE = "geometry_triangle"
+    GEOMETRY_CUBOID = "geometry_cuboid"
+    GEOMETRY_FRACTALS = "geometry_fractals"
     ALGEBRA = "algebra"
     ARITHMETIC = "arithmetic"
 
@@ -53,6 +55,18 @@ PAGES = {
         file_path="pages.geometry.triangles",
         handler="show_triangles_page",
         description="三角形的性质与构造"
+    ),
+    PageID.GEOMETRY_CUBOID: PageInfo(
+        display_name="几何/长方体",
+        file_path="pages.geometry.cuboid",
+        handler="show_cuboid_page",
+        description="长方体的三维可视化"
+    ),
+    PageID.GEOMETRY_FRACTALS: PageInfo(
+        display_name="几何/分形",
+        file_path="pages.geometry.fractals",
+        handler="show_fractals_page",
+        description="分形图形的生成与性质"
     ),
     # ... 其他页面配置
 }
