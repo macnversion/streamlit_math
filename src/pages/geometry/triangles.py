@@ -202,9 +202,9 @@ def show_triangles_page():
         
         with col1:
             st.markdown("### 输入三角形的三边长")
-            a = st.number_input("边a", min_value=0.1, value=3.0, step=0.1, key="geometry_triangles_calc_side_a")
-            b = st.number_input("边b", min_value=0.1, value=4.0, step=0.1, key="geometry_triangles_calc_side_b")
-            c = st.number_input("边c", min_value=0.1, value=5.0, step=0.1, key="geometry_triangles_calc_side_c")
+            a = st.number_input("边a", min_value=0.1, value=3.0, step=0.1, key="triangle_calc_side_a")
+            b = st.number_input("边b", min_value=0.1, value=4.0, step=0.1, key="triangle_calc_side_b")
+            c = st.number_input("边c", min_value=0.1, value=5.0, step=0.1, key="triangle_calc_side_c")
         
         with col2:
             # 检查三角形是否合法
@@ -222,5 +222,3 @@ def show_triangles_page():
                 st.metric("面积", f"{area:.2f}")
             else:
                 st.error("这不是一个有效的三角形！（任意两边之和必须大于第三边）")
-
-show_triangles_page()

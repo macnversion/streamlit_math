@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from ..utils.visualization import create_figure, setup_coordinate_system
 from ..utils.plot_utils import configure_matplotlib_defaults
+from ..i18n.language_manager import get_text
 
-# 配置matplotlib
-configure_matplotlib_defaults()
+# 配置matplotlib并获取中文字体
+chinese_font = configure_matplotlib_defaults()
 
 def calculate_angle_points(angle_deg, radius=5, num_points=100):
     """计算角的边的点坐标
@@ -40,110 +41,85 @@ def calculate_angle_points(angle_deg, radius=5, num_points=100):
     
     return (x_start, y_start), (x_end, y_end), (x_arc, y_arc)
 
+def draw_angle(angle_deg):
+    """绘制角度"""
+    fig, ax = plt.subplots(figsize=(6, 6))
+    
+    # 计算角的点
+    (x_start, y_start), (x_end, y_end), (x_arc, y_arc) = calculate_angle_points(angle_deg)
+    
+    # 绘制射线
+    ax.plot(x_start, y_start, 'b-', linewidth=2, label=get_text('start_side'))
+    ax.plot(x_end, y_end, 'r-', linewidth=2, label=get_text('end_side'))
+    
+    # 绘制弧线
+    ax.plot(x_arc, y_arc, 'g-', linewidth=2)
+    
+    # 添加角度标注
+    arc_center_idx = len(x_arc) // 2
+    arc_center_x = x_arc[arc_center_idx] * 1.5
+    arc_center_y = y_arc[arc_center_idx] * 1.5
+    ax.text(arc_center_x, arc_center_y, f'{abs(angle_deg)}°',
+            fontproperties=chinese_font, fontsize=12)
+    
+    # 设置图形属性
+    ax.set_aspect('equal')
+    ax.grid(True)
+    ax.set_xlim(-6, 6)
+    ax.set_ylim(-6, 6)
+    ax.set_title(get_text('angle_visualization'), fontproperties=chinese_font)
+    ax.set_xlabel('x', fontproperties=chinese_font)
+    ax.set_ylabel('y', fontproperties=chinese_font)
+    ax.legend(prop=chinese_font)
+    
+    return fig
+
 def draw_angle_component():
     """角度绘制组件"""
-    st.subheader("角度探索器")
+    st.subheader(get_text('angle_explorer'))
     
-    col1, col2 = st.columns(2)
+    # 移除原来的列布局，改为垂直布局
+    angle = st.slider(get_text('angle'), min_value=-360, max_value=360, value=45,
+                     help=get_text('angle_slider_help'),
+                     key="angle_explorer")
     
-    with col1:
-        angle = st.slider("角度", min_value=-360, max_value=360, value=45,
-                         help="拖动滑块改变角度大小（正值为逆时针，负值为顺时针）",
-                         key="angle_slider")
-        radius = st.slider("射线长度", min_value=1.0, max_value=10.0, value=5.0,
-                          key="radius_slider")
+    st.markdown(f"""
+    {get_text('current_angle')}：**{angle}°**
     
-    with col2:
-        show_grid = st.checkbox("显示网格", value=True, key="show_grid_basic")
-        show_degree = st.checkbox("显示度数", value=True, key="show_degree_basic")
-        margin = st.slider("图形边距", min_value=1.1, max_value=2.0, value=1.5,
-                          key="margin_slider")
+    {get_text('characteristics')}：
+    - {get_text('acute_angle') if 0 < abs(angle) < 90 else get_text('right_angle') if abs(angle) == 90 else get_text('obtuse_angle') if 90 < abs(angle) < 180 else get_text('straight_angle') if abs(angle) == 180 else get_text('reflex_angle') if 180 < abs(angle) < 360 else get_text('zero_angle')}
+    - {get_text('counterclockwise') if angle > 0 else get_text('clockwise') if angle < 0 else get_text('zero_angle')}
+    """)
     
-    # 创建一个居中的容器
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:  # 使用中间的列来显示图形
-        fig, ax = create_figure(figsize=(4, 4))  # 使用较小的图形尺寸
-        
-        # 计算角的点集
-        (x_start, y_start), (x_end, y_end), (x_arc, y_arc) = calculate_angle_points(angle, radius)
-        
-        # 设置坐标系范围
-        max_coord = radius * margin
-        setup_coordinate_system(ax, xlim=(-max_coord, max_coord), ylim=(-max_coord, max_coord))
-        
-        # 绘制射线
-        ax.plot(x_start, y_start, 'b-', linewidth=2)  # 起始射线
-        ax.plot(x_end, y_end, 'b-', linewidth=2)      # 终止射线
-        
-        # 绘制弧线
-        ax.plot(x_arc, y_arc, 'r-', linewidth=2)
-        
-        # 显示角度值
-        if show_degree:
-            arc_center_idx = len(x_arc) // 2
-            text_x = x_arc[arc_center_idx] * 1.5
-            text_y = y_arc[arc_center_idx] * 1.5
-            ax.text(text_x, text_y, f'{angle}°', fontsize=12)
-        
-        # 设置网格
-        ax.grid(show_grid)
-        
-        # 在原点添加一个点
-        ax.plot(0, 0, 'ko')
-        
-        st.pyplot(fig)
+    # 图形放在特点说明的下面
+    fig = draw_angle(angle)
+    st.pyplot(fig)
 
 def draw_special_angles_component():
     """特殊角度展示组件"""
-    st.subheader("认识特殊角")
+    st.subheader(get_text('special_angles'))
     
     special_angles = {
-        "直角": 90,
-        "锐角": 45,
-        "钝角": 135,
-        "平角": 180,
-        "周角": 360
+        "30°": (30, 'special_angle_30'),
+        "45°": (45, 'special_angle_45'),
+        "60°": (60, 'special_angle_60'),
+        "90°": (90, 'special_angle_90'),
+        "120°": (120, 'special_angle_120'),
+        "180°": (180, 'special_angle_180')
     }
     
     selected_angle = st.selectbox(
-        "选择特殊角",
+        get_text('select_special_angle'),
         list(special_angles.keys()),
-        key="special_angle_select"
+        key="special_angle_selector"
     )
     
-    angle = special_angles[selected_angle]
+    angle, description_key = special_angles[selected_angle]
+    fig = draw_angle(angle)
+    st.pyplot(fig)
     
-    # 创建一个居中的容器
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:  # 使用中间的列来显示图形
-        # 使用基本角度绘制组件的函数绘制选中的特殊角
-        fig, ax = create_figure(figsize=(4, 4))  # 使用较小的图形尺寸
-        (x_start, y_start), (x_end, y_end), (x_arc, y_arc) = calculate_angle_points(angle)
-        
-        # 设置坐标系范围
-        setup_coordinate_system(ax, xlim=(-6, 6), ylim=(-6, 6))
-        
-        # 绘制角
-        ax.plot(x_start, y_start, 'b-', linewidth=2)
-        ax.plot(x_end, y_end, 'b-', linewidth=2)
-        ax.plot(x_arc, y_arc, 'r-', linewidth=2)
-        
-        # 显示角度值和说明
-        ax.text(1, 1, f'{angle}°', fontsize=12)
-        
-        st.pyplot(fig)
-    
-    # 显示说明文本
-    angle_descriptions = {
-        "直角": "90度角，是两条相互垂直的直线所成的角。在日常生活中很常见，比如房屋的墙角、课本的四角等。",
-        "锐角": "小于90度的角。45度角是一个典型的锐角，它将直角平分。",
-        "钝角": "大于90度但小于180度的角。135度角是一个典型的钝角，它比直角大45度。",
-        "平角": "180度角，两条射线在同一直线上。",
-        "周角": "360度角，一个完整的圆周。"
-    }
-    
-    st.markdown(f"**{selected_angle}的说明：**")
-    st.write(angle_descriptions[selected_angle])
+    # 添加说明
+    st.markdown(get_text(description_key))
 
 def draw_dynamic_coordinate_system_component():
     """动态坐标系调整组件"""
@@ -153,15 +129,15 @@ def draw_dynamic_coordinate_system_component():
     
     with col1:
         x_min = st.slider("x轴最小值", min_value=-10.0, max_value=10.0, value=-5.0,
-                         key="x_min_slider")
+                         key="x_min_adjuster")  # 使用更具描述性的key
         x_max = st.slider("x轴最大值", min_value=-10.0, max_value=10.0, value=5.0,
-                         key="x_max_slider")
+                         key="x_max_adjuster")  # 使用更具描述性的key
     
     with col2:
         y_min = st.slider("y轴最小值", min_value=-10.0, max_value=10.0, value=-5.0,
-                         key="y_min_slider")
+                         key="y_min_adjuster")  # 使用更具描述性的key
         y_max = st.slider("y轴最大值", min_value=-10.0, max_value=10.0, value=5.0,
-                         key="y_max_slider")
+                         key="y_max_adjuster")  # 使用更具描述性的key
     
     # 创建一个居中的容器
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -180,12 +156,12 @@ def draw_interactive_control_component():
     col1, col2 = st.columns(2)
     
     with col1:
-        show_grid = st.checkbox("显示网格", value=True, key="show_grid_interactive")
-        show_axis = st.checkbox("显示坐标轴", value=True, key="show_axis_interactive")
+        show_grid = st.checkbox("显示网格", value=True, key="show_grid_controller")  # 使用更具描述性的key
+        show_axis = st.checkbox("显示坐标轴", value=True, key="show_axis_controller")  # 使用更具描述性的key
     
     with col2:
-        show_title = st.checkbox("显示标题", value=True, key="show_title_interactive")
-        show_legend = st.checkbox("显示图例", value=True, key="show_legend_interactive")
+        show_title = st.checkbox("显示标题", value=True, key="show_title_controller")  # 使用更具描述性的key
+        show_legend = st.checkbox("显示图例", value=True, key="show_legend_controller")  # 使用更具描述性的key
     
     # 创建一个居中的容器
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -199,9 +175,3 @@ def draw_interactive_control_component():
         ax.legend([] if show_legend else None)
         
         st.pyplot(fig)
-
-# 绘制所有组件
-draw_angle_component()
-draw_special_angles_component()
-draw_dynamic_coordinate_system_component()
-draw_interactive_control_component()
