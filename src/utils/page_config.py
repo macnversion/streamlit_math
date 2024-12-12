@@ -21,8 +21,10 @@ class PageID(Enum):
     GEOMETRY_TRIANGLE = "geometry_triangle"
     GEOMETRY_CUBOID = "geometry_cuboid"
     GEOMETRY_FRACTALS = "geometry_fractals"
+    GEOMETRY_CURTAIN = "geometry_curtain"
     ALGEBRA = "algebra"
     ARITHMETIC = "arithmetic"
+    MANIM_EXAMPLES = "manim_examples"
 
 # 页面配置字典
 PAGES = {
@@ -67,6 +69,18 @@ PAGES = {
         file_path="pages.geometry.fractals",
         handler="show_fractals_page",
         description="分形图形的生成与性质"
+    ),
+    PageID.GEOMETRY_CURTAIN: PageInfo(
+        display_name="几何/窗帘模型",
+        file_path="pages.geometry.curtain_model",
+        handler="render_curtain_page",
+        description="窗帘模型与伸缩变换"
+    ),
+    PageID.MANIM_EXAMPLES: PageInfo(
+        display_name="动画演示",
+        file_path="pages.manim_examples",
+        handler="render_manim_page",
+        description="数学动画演示"
     ),
     # ... 其他页面配置
 }
