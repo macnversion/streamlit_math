@@ -22,11 +22,10 @@ class ManimDemo:
             scene_class: Manim Scene 类
             quality: 渲染质量，可选 "low_quality", "medium_quality", "high_quality"
         """
-        temp_dir = self.create_temp_media_dir()
         scene = scene_class()
         scene.render()
-        # 获取生成的视频文件
-        video_path = os.path.join(temp_dir, f"{scene_class.__name__}.mp4")
+        # 使用 Manim 生成的实际视频路径
+        video_path = f"media/videos/1080p60/{scene_class.__name__}.mp4"
         return video_path
 
     def show_function_animation(self, func_type="sin"):

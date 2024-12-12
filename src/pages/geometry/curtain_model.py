@@ -126,7 +126,7 @@ def render_curtain_page():
         st.pyplot(fig_circle)
     
     # 交互式解释区域
-    st.markdown("""
+    st.markdown(r"""
     ### 窗帘模型的数学原理
     
     #### 伸缩变换的基本概念
@@ -139,8 +139,8 @@ def render_curtain_page():
     
     #### 面积变化规律
     
-    - 矩形面积变化：$S' = k \cdot S$
-    - 圆形面积变化：$S' = k^2 \cdot S$
+    - 矩形面积变化：$S^\prime = k \cdot S$
+    - 圆形面积变化：$S^\prime = k^2 \cdot S$
     
     ### 应用场景
     
